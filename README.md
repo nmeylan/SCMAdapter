@@ -1,6 +1,15 @@
 # SCMAdapter
 
-TODO: Write a gem description
+This is a generic SCMAdapter for following SCM :
+* Git
+* Svn
+* Hg (mercurial)
+
+The objective is only to implements these functions :
+* Retrieve revisions
+* Browse branches / tags
+* Retrieve commit
+* Diff
 
 ## Installation
 
@@ -16,14 +25,3 @@ Or install it yourself as:
 
     $ gem install SCMAdapter
 
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/SCMAdapter/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
