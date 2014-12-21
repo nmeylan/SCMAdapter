@@ -3,19 +3,17 @@
 # Encoding: UTF-8
 # File: abstract_adapter_factory.rb
 
-require 'adapters/git_adapter'
-require 'adapters/hg_adapter'
-require 'adapters/svn_adapter'
+
 module SCMAdapter
   class AbstractAdapterFactory
     def self.initialize(scm_name, path, credential = nil)
       case scm_name
         when :git
-          GitAdapter.new(path, credential)
+          SCMAdapter::Adapters::GitAdapter.new(path, credential)
         when :svn
-          SvnAdapter.new(path, credential)
+          SCMAdapter::Adapters::SvnAdapter.new(path, credential)
         when :hg
-          HgAdapter.new(path, credential)
+          SCMAdapter::Adapters::HgAdapter.new(path, credential)
         else
           raise 'This only support :git, :svn or :hg adapter'
       end
