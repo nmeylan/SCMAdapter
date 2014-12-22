@@ -20,5 +20,6 @@ tmp
 *.o
 *.a
 mkmf.log
-
+.DS_Store
 .idea/
+test/resources/git_untracked/

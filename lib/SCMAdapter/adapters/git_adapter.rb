@@ -6,8 +6,17 @@
 module SCMAdapter
   module Adapters
     class GitAdapter < AbstractAdapter
-      GIT_COMMAND = 'git'
-      GIT_ERROR_START = 'fatal:'
+      GIT_COMMAND = 'git'.freeze
+      GIT_ERRORS = %w(fatal: error:)
+      # COMMANDS
+      GIT_BRANCH = 'branch'.freeze
+      GIT_STATUS = 'status'.freeze
+      GIT_CURRENT = '*'.freeze
+      #REGEX
+      # first group select the 'star' for current branch
+      # second groupd select the branch name
+      # third group select the revision sha1
+      GIT_BRANCH_REGEX = '\s*(\*?)\s*(.*?)\s*([0-9a-f]{40}).*$'
 
       def initialize(path, credential = nil)
         super(path, :git, credential)
@@ -19,19 +28,43 @@ module SCMAdapter
         end
       end
 
+      def exists?
+        status
+        !failed?
+      end
+
       def status
         output = ''
-        popen('status') do |io|
+        popen(GIT_STATUS) do |io|
           io.each_line do |line|
+            handle_error(line) if GIT_ERRORS.any? { |word| line.include?(word) }
             output += "#{line} \n"
           end
-          handle_error(output)
         end
         output
       end
 
+
+      def branches
+        @branches = []
+        # command return : * master  c2caf9f3c33eeed9960fb6cc0de972870b38eb0b update file 1
+        cmd_args = %w|--no-color --verbose --no-abbrev|
+        popen(GIT_BRANCH, cmd_args) do |io|
+          io.each_line do |line|
+            handle_error(line) if GIT_ERRORS.any? { |word| line.include?(word) }
+            branch_rev = line.match(GIT_BRANCH_REGEX)
+            branch = SCMAdapter::RepositoryData::Branch::GitBranch.new(branch_rev[2], branch_rev[3])
+            branch.is_current = (branch_rev[1].eql? GIT_CURRENT)
+            @branches << branch
+          end
+        end
+        @branches
+      rescue ScmCommandAborted
+        logger.error "ScmCommandAborted"
+      end
+
       def handle_error(output)
-        super(output) if output.start_with?(GIT_ERROR_START)
+        super(output)
       end
     end
   end

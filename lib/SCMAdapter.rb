@@ -16,10 +16,18 @@ module SCMAdapter
     autoload :SvnAdapter, 'SCMAdapter/adapters/svn_adapter'
   end
 
+  module RepositoryData
+    module Branch
+      autoload :Branch, 'SCMAdapter/repository_data/branch/branch'
+      autoload :GitBranch, 'SCMAdapter/repository_data/branch/git_branch'
+    end
+  end
+
   ENV_MSWIN = :mswin
   ENV_UNIX = :unix
 
 
-  class CommandFailed < StandardError #:nodoc:
-  end
+  class CommandFailed < StandardError; end
+
+  class ScmCommandAborted < CommandFailed; end
 end

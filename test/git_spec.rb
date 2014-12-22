@@ -5,14 +5,50 @@
 
 require '../lib/SCMAdapter'
 
-describe SCMAdapter::Adapters::GitAdapter, 'instanciation' do
-  it "is instanciate" do
+describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
+  it "exists" do
     git = SCMAdapter::AbstractAdapterFactory.initialize(:git, 'resources/git')
 
     expect(git).not_to eql(nil)
-    git.status
-    expect(git.failed?).to eq(false)
+    expect(git.exists?).to eq(true)
   end
+
+  # it "does not exists" do
+  #   git = SCMAdapter::AbstractAdapterFactory.initialize(:git, 'resources/git_untracked')
+  #
+  #   expect(git).not_to eql(nil)
+  #   expect(git.exists?).to eq(false)
+  # end
 
 end
 
+describe SCMAdapter::Adapters::GitAdapter, 'branch' do
+  BRANCH_NAMES = %w(master branch1)
+  it "contains 2 branch" do
+    git = SCMAdapter::AbstractAdapterFactory.initialize(:git, 'resources/git')
+
+    expect(git).not_to eql(nil)
+    expect(git.branches.size).to eq(2)
+  end
+
+  it "contains 2 branch with names" do
+    git = SCMAdapter::AbstractAdapterFactory.initialize(:git, 'resources/git')
+
+    expect(git).not_to eql(nil)
+    branches = git.branches
+    expect(branches.size).to eq(2)
+    expect(BRANCH_NAMES.include?(branches[0].branch_name)).to eq(true)
+    expect(BRANCH_NAMES.include?(branches[1].branch_name)).to eq(true)
+  end
+
+  it "has master as current branch" do
+    git = SCMAdapter::AbstractAdapterFactory.initialize(:git, 'resources/git')
+
+    expect(git).not_to eql(nil)
+    branches = git.branches
+    expect(branches.size).to eq(2)
+    master = branches.detect{|branch| branch.branch_name.eql?('master')}
+    expect(master.is_current).to eq(true)
+  end
+
+end

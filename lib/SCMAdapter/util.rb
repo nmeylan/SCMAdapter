@@ -12,16 +12,17 @@ module SCMAdapter
 
     def popen(command, *arguments)
       arguments = arguments.compact.flatten
+      command = command.dup
       unless arguments.empty?
         arguments.each do |arg|
           command << SPACE << Shellwords.shellescape(arg.to_s)
         end
       end
 
-      logger.info("Execute : #{command}")
+      logger.warn("Execute : #{command}")
 
       IO.popen(command, MODE, err: [:child, :out]) do |io|
-        yield io if block_given?
+        output = yield io if block_given?
       end
     end
 

@@ -8,7 +8,7 @@ require 'pathname'
 module SCMAdapter
   class AbstractAdapter
 
-    attr_accessor :path, :adapter_name, :credential
+    attr_accessor :path, :adapter_name, :credential, :branches
 
     @@logger = Logger.new(STDOUT)
     @@logger.level = Logger::WARN
@@ -21,8 +21,19 @@ module SCMAdapter
       @adapter_name = adapter_name
       @credential = credential
       @failed = false
+      @branches = nil
     end
 
+    ####################################################
+    ##                  COMMANDS                      ##
+    ####################################################
+    def branches
+      raise 'This method is not implemented yet.'
+    end
+
+    ####################################################
+    ##                  MISC                          ##
+    ####################################################
     def exists?
       raise 'This method is not implemented yet.'
     end
@@ -34,19 +45,17 @@ module SCMAdapter
     def handle_error(output)
       logger.warn(output)
       @failed = true
+      raise CommandFailed, output
     end
 
     def failed?
       @failed
     end
+
     # Runs a command as a separate process.
     # @param [Symbol] sub_command The sub-command to run.
-    #
     # @param [Array] arguments Additional arguments to pass to the command.
-    #
-    # @yield [line] The given block will be passed each line read-in.
-    #
-    # @yieldparam [String] line A line read from the program.
+    # @yield [line] The given block will be passed.
     #
     # @return [IO] The stdout of the command being ran.
     #
