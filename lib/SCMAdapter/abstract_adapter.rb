@@ -31,6 +31,10 @@ module SCMAdapter
       raise 'This method is not implemented yet.'
     end
 
+    def tags
+      raise 'This method is not implemented yet.'
+    end
+
     ####################################################
     ##                  MISC                          ##
     ####################################################

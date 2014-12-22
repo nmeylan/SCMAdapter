@@ -47,8 +47,20 @@ describe SCMAdapter::Adapters::GitAdapter, 'branch' do
     expect(git).not_to eql(nil)
     branches = git.branches
     expect(branches.size).to eq(2)
-    master = branches.detect{|branch| branch.branch_name.eql?('master')}
+    master = branches.detect { |branch| branch.branch_name.eql?('master') }
     expect(master.is_current).to eq(true)
   end
 
+end
+
+describe SCMAdapter::Adapters::GitAdapter, 'tag' do
+  TAG_NAMES = %w(v0.1)
+  it "contains 1 tag" do
+    git = SCMAdapter::AbstractAdapterFactory.initialize(:git, 'resources/git')
+
+    expect(git).not_to eql(nil)
+    tags = git.tags
+    expect(tags.size).to eq(1)
+    expect(TAG_NAMES.include?(tags[0])).to eq(true)
+  end
 end

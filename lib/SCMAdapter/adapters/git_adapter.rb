@@ -10,6 +10,7 @@ module SCMAdapter
       GIT_ERRORS = %w(fatal: error:)
       # COMMANDS
       GIT_BRANCH = 'branch'.freeze
+      GIT_TAG = 'tag'.freeze
       GIT_STATUS = 'status'.freeze
       GIT_CURRENT = '*'.freeze
       #REGEX
@@ -60,7 +61,16 @@ module SCMAdapter
         end
         @branches
       rescue ScmCommandAborted
-        logger.error "ScmCommandAborted"
+        logger.error "Branch aborted"
+      end
+
+      def tags
+        @tags = []
+        popen(GIT_TAG) do |io|
+          @tags = io.readlines.sort!.map(&:strip)
+        end
+      rescue ScmCommandAborted
+        logger.error "Tag aborted"
       end
 
       def handle_error(output)
