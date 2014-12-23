@@ -76,8 +76,12 @@ module SCMAdapter
         logger.error "Tag aborted : #{e}"
       end
 
+      # @param [String] path
+      # @param [String] identifier_from
+      # @param [String] identifier_to
+      # @param [String] options
       def revisions(path = nil, identifier_from = nil, identifier_to = nil, options = {})
-        # A commit look like :
+        # A commit looks like :
         # commit c2caf9f3c33eeed9960fb6cc0de972870b38eb0b 74a2e4c6fff876a366b5249916f398f5690fd446
         # Author:     author <author@gmail.com>
         # AuthorDate: Sun Dec 21 15:39:37 2014 +0100
@@ -88,7 +92,6 @@ module SCMAdapter
         #     Commit message blllall
         #
         # :100644 100644 e69de29... da31a04... M  file1.txt
-
         cmd_args = %w(--no-color --encoding=UTF-8 --raw  --pretty=fuller --parents --stdin)
         cmd_args << '--reverse' if options[:reverse]
         cmd_args << '-n' << "#{options[:limit].to_i}" if options[:limit]
@@ -97,23 +100,24 @@ module SCMAdapter
         revisions_args = []
         if identifier_from || identifier_to
           revisions_args << BLANK
-          revisions_args[0] << "#{identifier_from}.." if identifier_from
-          revisions_args[0] << "#{identifier_to}" if identifier_to
+          revisions_args[0] += "#{identifier_from}.." if identifier_from
+          revisions_args[0] +="#{identifier_to}" if identifier_to
         end
         revisions = []
-        # split(/(^commit [0-9a-f]{40})/)
-        write_popen(GIT_LOG, revisions.join("\n"), cmd_args) do |io|
-
+        write_popen(GIT_LOG, revisions_args.join("\n"), cmd_args) do |io|
           output = io.gets(nil) # Get all output
+          handle_error(output) if GIT_ERRORS.any? { |word| output.include?(word) }
           commits = output.split(/^(commit [0-9a-f]{40})/).delete_if(&:empty?)
-          commits_hash = Hash[*commits]
-          commits_hash.each do |commit, content|
-            parent = content.lines.first.strip!
-            author, date = revision_parse_author_and_date(content)
-            message = content =~ /^(\s{5}.*)\n\n:/m ? $1.strip! : BLANK
-            files = content.scan(/^:\d+\s+\d+\s+[0-9a-f.]+\s+[0-9a-f.]+\s+(\w)\s(.+)/)
-            files.collect! { |action_path| {action: action_path[0], path: action_path[1]} }
-            revisions << SCMAdapter::RepositoryData::Revision.new(commit.scan(/[0-9a-f]{40}/).first, author, date, parent, message, files)
+          if commits.any?
+            commits_hash = Hash[*commits]
+            commits_hash.each do |commit, content|
+              parent = content.lines.first.strip!
+              author, date = revision_parse_author_and_date(content)
+              message = content =~ /^(\s{5}.*)\n\n:/m ? $1.strip! : BLANK
+              files = content.scan(/^:\d+\s+\d+\s+[0-9a-f.]+\s+[0-9a-f.]+\s+(\w)\s(.+)/)
+              files.collect! { |action_path| {action: action_path[0], path: action_path[1]} }
+              revisions << SCMAdapter::RepositoryData::Revision.new(commit.scan(/[0-9a-f]{40}/).first, author, date, parent, message, files)
+            end
           end
         end
         revisions
