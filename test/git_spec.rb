@@ -53,7 +53,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
       expect(revision.parent_identifier).to eql('2c0e852bf3d1212f8c23650f9f815634f021c60e')
       expect(revision.author.name).to eql('nmeylan')
       expect(revision.author.email).to eql('nmeylan@gmail.com')
-      expect(revision.date).to eql(Date.parse("Mon Dec 22 18:22:27 2014 +0100"))
+      expect(revision.time).to eql(Time.parse("Mon Dec 22 18:22:27 2014 +0100"))
       expect(revision.message).to include("Update file 1 and 2")
       expect(revision.files.size).to eql(2)
     end
@@ -61,15 +61,15 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     it "load revisions for a given range" do
       @revisions = @git.revisions(nil, '74a2e4c6fff876a366b5249916f398f5690fd446', 'a440de9ad38f8571026fdf963d910988c77c5d26')
       expect(@revisions.size).to eql(2)
-      expect(@revisions[0].date).to eql(Date.parse('Mon Dec 22 14:03:25 2014 +0100'))
-      expect(@revisions[1].date).to eql(Date.parse('Sun Dec 21 15:39:37 2014 +0100'))
+      expect(@revisions[0].time).to eql(Time.parse('Mon Dec 22 14:03:25 2014 +0100'))
+      expect(@revisions[1].time).to eql(Time.parse('Sun Dec 21 15:39:37 2014 +0100'))
     end
 
     it "load revisions for a given range and reverse result" do
       @revisions = @git.revisions(nil, '74a2e4c6fff876a366b5249916f398f5690fd446', 'a440de9ad38f8571026fdf963d910988c77c5d26', {reverse: true})
       expect(@revisions.size).to eql(2)
-      expect(@revisions[1].date).to eql(Date.parse('Mon Dec 22 14:03:25 2014 +0100'))
-      expect(@revisions[0].date).to eql(Date.parse('Sun Dec 21 15:39:37 2014 +0100'))
+      expect(@revisions[1].time).to eql(Time.parse('Mon Dec 22 14:03:25 2014 +0100'))
+      expect(@revisions[0].time).to eql(Time.parse('Sun Dec 21 15:39:37 2014 +0100'))
     end
 
     it "load revisions for a given path" do

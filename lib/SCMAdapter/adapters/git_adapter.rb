@@ -112,11 +112,11 @@ module SCMAdapter
             commits_hash = Hash[*commits]
             commits_hash.each do |commit, content|
               parent = content.lines.first.strip!
-              author, date = revision_parse_author_and_date(content)
+              author, time = revision_parse_author_and_date(content)
               message = content =~ /^(\s{5}.*)\n\n:/m ? $1.strip! : BLANK
               files = content.scan(/^:\d+\s+\d+\s+[0-9a-f.]+\s+[0-9a-f.]+\s+(\w)\s(.+)/)
               files.collect! { |action_path| {action: action_path[0], path: action_path[1]} }
-              revisions << SCMAdapter::RepositoryData::Revision.new(commit.scan(/[0-9a-f]{40}/).first, author, date, parent, message, files)
+              revisions << SCMAdapter::RepositoryData::Revision.new(commit.scan(/[0-9a-f]{40}/).first, author, time, parent, message, files)
             end
           end
         end
@@ -124,7 +124,7 @@ module SCMAdapter
       end
 
       def revision_parse_author_and_date(content)
-        author = date = nil
+        author = time = nil
         content.each_line do |line|
           if line =~ /^(\w+):\s*(.*)$/
             key = $1
@@ -133,11 +133,11 @@ module SCMAdapter
               value.scan(/(^.*)<(.*)>/)
               author = SCMAdapter::RepositoryData::Author.new($1.strip!, $2)
             elsif key.eql?('CommitDate')
-              date = Date.parse(value)
+              time = Time.parse(value)
             end
           end
         end
-        return author, date
+        return author, time
       end
 
       def handle_error(output)
