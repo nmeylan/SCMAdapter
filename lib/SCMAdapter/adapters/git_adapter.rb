@@ -12,7 +12,10 @@ module SCMAdapter
       GIT_BRANCH = 'branch'.freeze
       GIT_TAG = 'tag'.freeze
       GIT_STATUS = 'status'.freeze
+      GIT_LOG = 'log'.freeze
+      # Other
       GIT_CURRENT = '*'.freeze
+      BLANK = ''
       #REGEX
       # first group select the 'star' for current branch
       # second groupd select the branch name
@@ -49,19 +52,19 @@ module SCMAdapter
       def branches
         @branches = []
         # command return : * master  c2caf9f3c33eeed9960fb6cc0de972870b38eb0b update file 1
-        cmd_args = %w|--no-color --verbose --no-abbrev|
+        cmd_args = %w(--no-color --verbose --no-abbrev)
         popen(GIT_BRANCH, cmd_args) do |io|
           io.each_line do |line|
             handle_error(line) if GIT_ERRORS.any? { |word| line.include?(word) }
             branch_rev = line.match(GIT_BRANCH_REGEX)
-            branch = SCMAdapter::RepositoryData::Branch::GitBranch.new(branch_rev[2], branch_rev[3])
+            branch = SCMAdapter::RepositoryData::Branch.new(branch_rev[2], branch_rev[3])
             branch.is_current = (branch_rev[1].eql? GIT_CURRENT)
             @branches << branch
           end
         end
         @branches
-      rescue ScmCommandAborted
-        logger.error "Branch aborted"
+      rescue ScmCommandAborted => e
+        logger.error "Branch aborted : #{e}"
       end
 
       def tags
@@ -69,8 +72,68 @@ module SCMAdapter
         popen(GIT_TAG) do |io|
           @tags = io.readlines.sort!.map(&:strip)
         end
-      rescue ScmCommandAborted
-        logger.error "Tag aborted"
+      rescue ScmCommandAborted => e
+        logger.error "Tag aborted : #{e}"
+      end
+
+      def revisions(path = nil, identifier_from = nil, identifier_to = nil, options = {})
+        # A commit look like :
+        # commit c2caf9f3c33eeed9960fb6cc0de972870b38eb0b 74a2e4c6fff876a366b5249916f398f5690fd446
+        # Author:     author <author@gmail.com>
+        # AuthorDate: Sun Dec 21 15:39:37 2014 +0100
+        # Commit:     author <author@gmail.com>
+        # CommitDate: Sun Dec 21 15:39:37 2014 +0100
+        #
+        #     update file 1
+        #     Commit message blllall
+        #
+        # :100644 100644 e69de29... da31a04... M  file1.txt
+
+        cmd_args = %w(--no-color --encoding=UTF-8 --raw  --pretty=fuller --parents --stdin)
+        cmd_args << '--reverse' if options[:reverse]
+        cmd_args << '-n' << "#{options[:limit].to_i}" if options[:limit]
+        cmd_args << '--' << encode_str_to(path) if path && !path.empty?
+
+        revisions_args = []
+        if identifier_from || identifier_to
+          revisions_args << BLANK
+          revisions_args[0] << "#{identifier_from}.." if identifier_from
+          revisions_args[0] << "#{identifier_to}" if identifier_to
+        end
+        revisions = []
+        # split(/(^commit [0-9a-f]{40})/)
+        write_popen(GIT_LOG, revisions.join("\n"), cmd_args) do |io|
+
+          output = io.gets(nil) # Get all output
+          commits = output.split(/^(commit [0-9a-f]{40})/).delete_if(&:empty?)
+          commits_hash = Hash[*commits]
+          commits_hash.each do |commit, content|
+            parent = content.lines.first.strip!
+            author, date = revision_parse_author_and_date(content)
+            message = content =~ /^(\s{5}.*)\n\n:/m ? $1.strip! : BLANK
+            files = content.scan(/^:\d+\s+\d+\s+[0-9a-f.]+\s+[0-9a-f.]+\s+(\w)\s(.+)/)
+            files.collect! { |action_path| {action: action_path[0], path: action_path[1]} }
+            revisions << SCMAdapter::RepositoryData::Revision.new(commit.scan(/[0-9a-f]{40}/).first, author, date, parent, message, files)
+          end
+        end
+        revisions
+      end
+
+      def revision_parse_author_and_date(content)
+        author = date = nil
+        content.each_line do |line|
+          if line =~ /^(\w+):\s*(.*)$/
+            key = $1
+            value = $2
+            if key.eql?('Author')
+              value.scan(/(^.*)<(.*)>/)
+              author = SCMAdapter::RepositoryData::Author.new($1.strip!, $2)
+            elsif key.eql?('CommitDate')
+              date = Date.parse(value)
+            end
+          end
+        end
+        return author, date
       end
 
       def handle_error(output)

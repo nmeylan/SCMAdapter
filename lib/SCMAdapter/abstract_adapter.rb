@@ -69,6 +69,17 @@ module SCMAdapter
       end
     end
 
+    def write_popen(sub_command, write_input, *arguments, &block)
+      Dir.chdir(@path) do
+        self.class.write_popen(sub_command, write_input, arguments, &block)
+      end
+    end
+
+    def prepare_command(sub_command, *arguments)
+      self.class.prepare_command(*[self.class.command, sub_command], *arguments)
+    end
+
+
     ####################################################
     ##                  CLASS METHODS                 ##
     ####################################################
@@ -88,6 +99,14 @@ module SCMAdapter
     # @param [Block] block.
     def self.popen(sub_command, arguments, options=nil, &block)
       super(*[command, sub_command], arguments, options, &block)
+    end
+
+    # @param [String] sub_command : the scm command, e.g : 'commit', 'add'.
+    # @param [Array] arguments : the arguments for the command.
+    # @param [Array] options : additional options.
+    # @param [Block] block.
+    def self.write_popen(sub_command, write_input, arguments, &block)
+      super(command, sub_command, write_input, arguments, &block)
     end
 
     ####################################################

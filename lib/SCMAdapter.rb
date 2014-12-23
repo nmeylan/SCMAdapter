@@ -17,17 +17,18 @@ module SCMAdapter
   end
 
   module RepositoryData
-    module Branch
-      autoload :Branch, 'SCMAdapter/repository_data/branch/branch'
-      autoload :GitBranch, 'SCMAdapter/repository_data/branch/git_branch'
-    end
+    autoload :Branch, 'SCMAdapter/repository_data/branch'
+    autoload :Revision, 'SCMAdapter/repository_data/revision'
+    autoload :Author, 'SCMAdapter/repository_data/author'
   end
 
   ENV_MSWIN = :mswin
   ENV_UNIX = :unix
 
 
-  class CommandFailed < StandardError; end
+  class CommandFailed < StandardError;
+  end
 
-  class ScmCommandAborted < CommandFailed; end
+  class ScmCommandAborted < CommandFailed;
+  end
 end
