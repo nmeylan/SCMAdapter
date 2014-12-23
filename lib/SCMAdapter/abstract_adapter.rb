@@ -7,7 +7,7 @@ require 'logger'
 require 'pathname'
 module SCMAdapter
   class AbstractAdapter
-
+    include SCMAdapter::Util
     attr_accessor :path, :adapter_name, :credential, :branches
 
     @@logger = Logger.new(STDOUT)
@@ -35,6 +35,18 @@ module SCMAdapter
       raise 'This method is not implemented yet.'
     end
 
+    # @param [String] path : Show only commits that are enough to explain how the files that match the specified paths came to be.
+    # @param [String] identifier_from : revision from for the range.
+    # @param [String] identifier_to : revision to for the range.
+    # Show only commits in the specified revision range.
+    # @param [Hash] options : extra options to give for the command. valid keys are :
+    # :limit or :reverse
+    # limit: Numeric
+    # reverse: true
+    def revisions(path = nil, identifier_from = nil, identifier_to = nil, options = {})
+      raise 'This method is not implemented yet.'
+    end
+
     ####################################################
     ##                  MISC                          ##
     ####################################################
@@ -57,7 +69,7 @@ module SCMAdapter
     end
 
     # Runs a command as a separate process.
-    # @param [Symbol] sub_command The sub-command to run.
+    # @param [Symbol] sub_command The sub-command to run. the scm command, e.g : 'commit', 'add'.
     # @param [Array] arguments Additional arguments to pass to the command.
     # @yield [line] The given block will be passed.
     #
@@ -65,25 +77,19 @@ module SCMAdapter
     #
     def popen(sub_command, *arguments, &block)
       Dir.chdir(@path) do
-        self.class.popen(sub_command, arguments, &block)
+        super(*[self.class.command, sub_command], arguments, &block)
       end
     end
 
     def write_popen(sub_command, write_input, *arguments, &block)
       Dir.chdir(@path) do
-        self.class.write_popen(sub_command, write_input, arguments, &block)
+        super(self.class.command,sub_command, write_input, arguments, &block)
       end
     end
-
-    def prepare_command(sub_command, *arguments)
-      self.class.prepare_command(*[self.class.command, sub_command], *arguments)
-    end
-
 
     ####################################################
     ##                  CLASS METHODS                 ##
     ####################################################
-    extend SCMAdapter::Util
 
     def self.logger
       @@logger
@@ -91,22 +97,6 @@ module SCMAdapter
 
     def self.command
       raise 'This method is not implemented yet.'
-    end
-
-    # @param [String] sub_command : the scm command, e.g : 'commit', 'add'.
-    # @param [Array] arguments : the arguments for the command.
-    # @param [Array] options : additional options.
-    # @param [Block] block.
-    def self.popen(sub_command, arguments, options=nil, &block)
-      super(*[command, sub_command], arguments, options, &block)
-    end
-
-    # @param [String] sub_command : the scm command, e.g : 'commit', 'add'.
-    # @param [Array] arguments : the arguments for the command.
-    # @param [Array] options : additional options.
-    # @param [Block] block.
-    def self.write_popen(sub_command, write_input, arguments, &block)
-      super(command, sub_command, write_input, arguments, &block)
     end
 
     ####################################################

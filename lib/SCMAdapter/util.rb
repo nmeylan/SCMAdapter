@@ -13,7 +13,7 @@ module SCMAdapter
     def popen(command, *arguments)
       command = prepare_command(command, *arguments)
 
-      logger.warn("Execute : #{command}")
+      logger.debug("Execute : #{command}")
 
       IO.popen(command, MODE, err: [:child, :out]) do |io|
         output = yield io if block_given?
@@ -23,8 +23,7 @@ module SCMAdapter
     def write_popen(command, sub_command, write_input, *arguments)
       command = prepare_command(command, *[sub_command, arguments])
 
-      logger.warn("Execute : #{command}")
-
+      logger.debug("Execute : #{command}")
       IO.popen(command, MODE,{err: [:child, :out], write_stdin: true}) do |io|
         io.binmode
         io.puts(write_input)
@@ -59,11 +58,11 @@ module SCMAdapter
       lines
     end
 
-    def encode_str_to(str, to = 'UTF8')
+    def encode_str_to(str, to = 'UTF-8')
       begin
         str.encode(to)
       rescue Exception => err
-        logger.error("failed to convert from #{from} to #{to}. #{err}")
+        logger.error("failed to convert to #{to}. #{err}")
         nil
       end
     end
