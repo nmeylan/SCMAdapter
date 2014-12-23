@@ -74,7 +74,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
 
     it "load revisions for a given path" do
       @revisions = @git.revisions('file1.txt')
-      expect(@revisions.size).to be >= 4 # The are for commit for file1.txt at the moment (when I wrote this test).
+      expect(@revisions.size).to be >= 4 # The are four commit for file1.txt at the moment (when I wrote this test).
     end
   end
 end
