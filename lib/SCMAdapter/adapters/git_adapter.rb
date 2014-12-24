@@ -111,16 +111,20 @@ module SCMAdapter
           if commits.any?
             commits_hash = Hash[*commits]
             commits_hash.each do |commit, content|
-              parent = content.lines.first.strip!
-              author, time = revision_parse_author_and_date(content)
-              message = content =~ /^(\s{5}.*)\n\n:/m ? $1.strip! : BLANK
-              files = content.scan(/^:\d+\s+\d+\s+[0-9a-f.]+\s+[0-9a-f.]+\s+(\w)\s(.+)/)
-              files.collect! { |action_path| {action: action_path[0], path: action_path[1]} }
-              revisions << SCMAdapter::RepositoryData::Revision.new(commit.scan(/[0-9a-f]{40}/).first, author, time, parent, message, files)
+              revisions << revision_parse_commit(commit, content)
             end
           end
         end
         revisions
+      end
+
+      def revision_parse_commit(commit, content)
+        parents = content.lines.first.scan(/[0-9a-f]{40}/)
+        author, time = revision_parse_author_and_date(content)
+        message = content =~ /^(\s{5}.*)\n\n:/m ? $1.strip! : BLANK
+        files = content.scan(/^:\d+\s+\d+\s+[0-9a-f.]+\s+[0-9a-f.]+\s+(\w)\s(.+)/)
+        files.collect! { |action_path| {action: action_path[0], path: action_path[1]} }
+        SCMAdapter::RepositoryData::Revision.new(commit.scan(/[0-9a-f]{40}/).first, author, time, parents, message, files)
       end
 
       def revision_parse_author_and_date(content)
