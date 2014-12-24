@@ -7,6 +7,7 @@ require 'logger'
 require 'pathname'
 module SCMAdapter
   class AbstractAdapter
+    # See implementation in the "adapters" folder
     include SCMAdapter::Util
     attr_accessor :path, :adapter_name, :credential, :branches
 
@@ -20,7 +21,6 @@ module SCMAdapter
       @path = Pathname.new(File.expand_path(path))
       @adapter_name = adapter_name
       @credential = credential
-      @failed = false
       @branches = nil
     end
 
@@ -28,11 +28,11 @@ module SCMAdapter
     ##                  COMMANDS                      ##
     ####################################################
     def branches
-      raise 'This method is not implemented yet.'
+      raise 'This method should be overridden into subclasses.'
     end
 
     def tags
-      raise 'This method is not implemented yet.'
+      raise 'This method should be overridden into subclasses.'
     end
 
     # @param [String] path : Show only commits that are enough to explain how the files that match the specified paths came to be.
@@ -40,18 +40,19 @@ module SCMAdapter
     # @param [String] identifier_to : revision to for the range.
     # Show only commits in the specified revision range.
     # @param [Hash] options : extra options to give for the command. valid keys are :
-    # :limit or :reverse
-    # limit: Numeric
+    # :limit, :reverse, :include, :exclude
+    # limit: Numeric that indicates the number of revisions to fetch.
     # reverse: true
+    # include: Array that contains revisions identifier
     def revisions(path = nil, identifier_from = nil, identifier_to = nil, options = {})
-      raise 'This method is not implemented yet.'
+      raise 'This method should be overridden into subclasses.'
     end
 
     ####################################################
     ##                  MISC                          ##
     ####################################################
     def exists?
-      raise 'This method is not implemented yet.'
+      raise 'This method should be overridden into subclasses.'
     end
 
     def logger
@@ -60,12 +61,7 @@ module SCMAdapter
 
     def handle_error(output)
       logger.warn(output)
-      @failed = true
       raise CommandFailed, output
-    end
-
-    def failed?
-      @failed
     end
 
     # Runs a command as a separate process.
@@ -96,7 +92,7 @@ module SCMAdapter
     end
 
     def self.command
-      raise 'This method is not implemented yet.'
+      raise 'This method should be overridden into subclasses.'
     end
 
     ####################################################
