@@ -39,11 +39,15 @@ module SCMAdapter
     # @param [String] path : Show only commits that are enough to explain how the files that match the specified paths came to be.
     # Show only commits in the specified revision range.
     # @param [Hash] options : extra options to give for the command. valid keys are :
-    # from: revision from for the range.
-    # to: revision to for the range.
     # limit: Numeric that indicates the number of revisions to fetch.
     # reverse: true
-    # include: Array that contains revisions identifier
+    # from: revision from for the range.
+    # to: revision to for the range.
+    # includes: Array that contains revisions identifier, revision(and ancestors) in this array will be included.
+    # excludes : Array that contains revisions identifier,  revision in this array will be excluded.
+    # includes_exclude_ancestor: Array that contains revisions identifier, revision(without ancestors) in this array will be included.
+    # Range loading :
+    # from:, to: | includes:, excludes: | includes_without_ancestors:
     def revisions(path = nil, options = {})
       raise 'This method should be overridden into subclasses.'
     end

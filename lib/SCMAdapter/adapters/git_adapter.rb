@@ -117,11 +117,12 @@ module SCMAdapter
           revisions_args << BLANK
           revisions_args[0] += "#{options[:from]}.." if options[:from]
           revisions_args[0] +="#{options[:to]}" if options[:to]
-        else
+        elsif options[:includes] || options[:includes]
           revisions_args += options[:includes] if options[:includes]
           revisions_args += options[:excludes].map { |r| "^#{r}" } if options[:excludes]
+        elsif options[:includes_without_ancestors]
+          revisions_args += options[:includes_without_ancestors].map { |r| "#{r}^!" }
         end
-        p revisions_args
         revisions_args
       end
 

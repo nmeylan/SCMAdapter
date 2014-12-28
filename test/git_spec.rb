@@ -83,5 +83,34 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
       revision = @revisions.detect { |rev| rev.identifier.eql?('1fbcfbe31a31ead054908fb92a3f9a9c8aa78f5b') }
       expect(revision.parents_identifier).to eql(%w(a3acb858147c69f86b7ba4688884a47776b6c2aa 9d38b7bbdb0e711c3ede805a6a41f141ae9fa4ef))
     end
+
+    it "load revisions with includes options" do
+      @revisions = @git.revisions(nil, {includes: %w(a440de9ad38f8571026fdf963d910988c77c5d26)})
+      expect(@revisions.size).to eql(3)
+      expect(@revisions[0].identifier).to eql('a440de9ad38f8571026fdf963d910988c77c5d26')
+      expect(@revisions[1].identifier).to eql(@revisions[0].parents_identifier.first)
+      expect(@revisions[2].identifier).to eql('74a2e4c6fff876a366b5249916f398f5690fd446')
+    end
+
+    it "load revisions with includes without ancestors options" do
+      @revisions = @git.revisions(nil, {includes_without_ancestors: %w(a440de9ad38f8571026fdf963d910988c77c5d26)})
+      expect(@revisions.size).to eql(1)
+      expect(@revisions[0].identifier).to eql('a440de9ad38f8571026fdf963d910988c77c5d26')
+    end
+
+    it "load revisions with includes and excludes options" do
+      @revisions = @git.revisions(nil, {includes: %w(a440de9ad38f8571026fdf963d910988c77c5d26), excludes: %w(c2caf9f3c33eeed9960fb6cc0de972870b38eb0b)})
+      expect(@revisions.size).to eql(1)
+      expect(@revisions[0].identifier).to eql('a440de9ad38f8571026fdf963d910988c77c5d26')
+    end
+
+
+
+    it "load revisions with includes and excludes options 2" do
+      @revisions = @git.revisions(nil, {includes: %w(a440de9ad38f8571026fdf963d910988c77c5d26), excludes: %w(74a2e4c6fff876a366b5249916f398f5690fd446)})
+      expect(@revisions.size).to eql(2)
+      expect(@revisions[0].identifier).to eql('a440de9ad38f8571026fdf963d910988c77c5d26')
+      expect(@revisions[1].identifier).to eql('c2caf9f3c33eeed9960fb6cc0de972870b38eb0b')
+    end
   end
 end
