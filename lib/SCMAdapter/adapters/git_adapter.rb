@@ -77,10 +77,8 @@ module SCMAdapter
       end
 
       # @param [String] path
-      # @param [String] identifier_from
-      # @param [String] identifier_to
-      # @param [String] options
-      def revisions(path = nil, identifier_from = nil, identifier_to = nil, options = {})
+      # @param [Hash] options : @see super class AbstractAdapter for available options.
+      def revisions(path = nil, options = {})
         # A commit looks like :
         # commit c2caf9f3c33eeed9960fb6cc0de972870b38eb0b 74a2e4c6fff876a366b5249916f398f5690fd446
         # Author:     author <author@gmail.com>
@@ -96,13 +94,7 @@ module SCMAdapter
         cmd_args << '--reverse' if options[:reverse]
         cmd_args << '-n' << "#{options[:limit].to_i}" if options[:limit]
         cmd_args << '--' << encode_str_to(path) if path && !path.empty?
-
-        revisions_args = []
-        if identifier_from || identifier_to
-          revisions_args << BLANK
-          revisions_args[0] += "#{identifier_from}.." if identifier_from
-          revisions_args[0] +="#{identifier_to}" if identifier_to
-        end
+        revisions_args = revision_specifying_range(options)
         revisions = []
         write_popen(GIT_LOG, revisions_args.join("\n"), cmd_args) do |io|
           output = io.gets(nil) # Get all output
@@ -111,14 +103,29 @@ module SCMAdapter
           if commits.any?
             commits_hash = Hash[*commits]
             commits_hash.each do |commit, content|
-              revisions << revision_parse_commit(commit, content)
+              revisions << revision_parse(commit, content)
             end
           end
         end
         revisions
       end
 
-      def revision_parse_commit(commit, content)
+      # More info : http://git-scm.com/docs/gitrevisions#_specifying_ranges
+      def revision_specifying_range(options)
+        revisions_args = []
+        if options[:from] || options[:to]
+          revisions_args << BLANK
+          revisions_args[0] += "#{options[:from]}.." if options[:from]
+          revisions_args[0] +="#{options[:to]}" if options[:to]
+        else
+          revisions_args += options[:includes] if options[:includes]
+          revisions_args += options[:excludes].map { |r| "^#{r}" } if options[:excludes]
+        end
+        p revisions_args
+        revisions_args
+      end
+
+      def revision_parse(commit, content)
         parents = content.lines.first.scan(/[0-9a-f]{40}/)
         author, time = revision_parse_author_and_date(content)
         message = content =~ /^(\s{5}.*)\n\n:/m ? $1.strip! : BLANK

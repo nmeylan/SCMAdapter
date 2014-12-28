@@ -21,6 +21,7 @@ module SCMAdapter
       @path = Pathname.new(File.expand_path(path))
       @adapter_name = adapter_name
       @credential = credential
+      @failed = false
       @branches = nil
     end
 
@@ -36,15 +37,14 @@ module SCMAdapter
     end
 
     # @param [String] path : Show only commits that are enough to explain how the files that match the specified paths came to be.
-    # @param [String] identifier_from : revision from for the range.
-    # @param [String] identifier_to : revision to for the range.
     # Show only commits in the specified revision range.
     # @param [Hash] options : extra options to give for the command. valid keys are :
-    # :limit, :reverse, :include, :exclude
+    # from: revision from for the range.
+    # to: revision to for the range.
     # limit: Numeric that indicates the number of revisions to fetch.
     # reverse: true
     # include: Array that contains revisions identifier
-    def revisions(path = nil, identifier_from = nil, identifier_to = nil, options = {})
+    def revisions(path = nil, options = {})
       raise 'This method should be overridden into subclasses.'
     end
 
@@ -61,7 +61,12 @@ module SCMAdapter
 
     def handle_error(output)
       logger.warn(output)
+      @failed = true
       raise CommandFailed, output
+    end
+
+    def failed?
+      @failed
     end
 
     # Runs a command as a separate process.

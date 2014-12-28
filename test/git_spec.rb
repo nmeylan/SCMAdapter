@@ -60,14 +60,14 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     end
 
     it "load revisions for a given range" do
-      @revisions = @git.revisions(nil, '74a2e4c6fff876a366b5249916f398f5690fd446', 'a440de9ad38f8571026fdf963d910988c77c5d26')
+      @revisions = @git.revisions(nil, {from: '74a2e4c6fff876a366b5249916f398f5690fd446', to: 'a440de9ad38f8571026fdf963d910988c77c5d26'})
       expect(@revisions.size).to eql(2)
       expect(@revisions[0].time).to eql(Time.parse('Mon Dec 22 14:03:25 2014 +0100'))
       expect(@revisions[1].time).to eql(Time.parse('Sun Dec 21 15:39:37 2014 +0100'))
     end
 
     it "load revisions for a given range and reverse result" do
-      @revisions = @git.revisions(nil, '74a2e4c6fff876a366b5249916f398f5690fd446', 'a440de9ad38f8571026fdf963d910988c77c5d26', {reverse: true})
+      @revisions = @git.revisions(nil, {from: '74a2e4c6fff876a366b5249916f398f5690fd446', to: 'a440de9ad38f8571026fdf963d910988c77c5d26', reverse: true})
       expect(@revisions.size).to eql(2)
       expect(@revisions[1].time).to eql(Time.parse('Mon Dec 22 14:03:25 2014 +0100'))
       expect(@revisions[0].time).to eql(Time.parse('Sun Dec 21 15:39:37 2014 +0100'))
