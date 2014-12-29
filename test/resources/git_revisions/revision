@@ -1,0 +1,13 @@
+commit 50a286db529aa1d3fd050101950678854be87b61 e9b25eb0556f475b4e9e6bcbb1c9fb295d21c511
+Author:     Yosuke <yosuketto@gmail.com>
+AuthorDate: Mon Dec 29 12:28:53 2014 +0900
+Commit:     Yosuke <yosuketto@gmail.com>
+CommitDate: Mon Dec 29 12:29:14 2014 +0900
+
+    adjust args of Bundler.require in guides [ci skip]
+
+    Arguments of Bundler.require of generator has been changed from rails4.0.4.
+
+    https://github.com/rails/rails/blob/v4.0.4/railties/lib/rails/generators/rails/app/templates/config/application.rb#L16
+
+:100644 100644 a98e17a... 4efc0c6... M  guides/source/upgrading_ruby_on_rails.md

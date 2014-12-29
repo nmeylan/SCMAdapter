@@ -99,12 +99,21 @@ module SCMAdapter
         write_popen(GIT_LOG, revisions_args.join("\n"), cmd_args) do |io|
           output = io.gets(nil) # Get all output
           handle_error(output) if GIT_ERRORS.any? { |word| output.include?(word) }
-          commits = output.split(/^(commit [0-9a-f]{40})/).delete_if(&:empty?)
-          if commits.any?
-            commits_hash = Hash[*commits]
-            commits_hash.each do |commit, content|
-              revisions << revision_parse(commit, content)
-            end
+
+          revisions = parse_revisions(output)
+        end
+        revisions
+      rescue ScmCommandAborted => e
+        logger.error "Log aborted : #{e}"
+      end
+
+      def parse_revisions(text_entry)
+        revisions = []
+        commits = text_entry.split(/^(commit [0-9a-f]{40})/).delete_if(&:empty?)
+        if commits.any?
+          commits_hash = Hash[*commits]
+          commits_hash.each do |commit, content|
+            revisions << parse_revision(commit, content)
           end
         end
         revisions
@@ -126,12 +135,12 @@ module SCMAdapter
         revisions_args
       end
 
-      def revision_parse(commit, content)
+      def parse_revision(commit, content)
         parents = content.lines.first.scan(/[0-9a-f]{40}/)
         author, time = revision_parse_author_and_date(content)
         message = content =~ /^(\s{5}.*)\n\n:/m ? $1.strip! : BLANK
         files = content.scan(/^:\d+\s+\d+\s+[0-9a-f.]+\s+[0-9a-f.]+\s+(\w)\s(.+)/)
-        files.collect! { |action_path| {action: action_path[0], path: action_path[1]} }
+        files.collect! { |action_path| {action: action_path[0], path: action_path[1].strip} }
         SCMAdapter::RepositoryData::Revision.new(commit.scan(/[0-9a-f]{40}/).first, author, time, parents, message, files)
       end
 
@@ -150,6 +159,12 @@ module SCMAdapter
           end
         end
         return author, time
+      end
+
+      # @param [String] commit_identifier : the commit identifier to perform the diff with its parents.
+      # @param [String] path : diff only a given file.
+      def diff(commit_identifier, path = nil)
+
       end
 
       def handle_error(output)

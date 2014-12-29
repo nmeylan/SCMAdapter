@@ -1,0 +1,60 @@
+commit b67b57d47368b4b834cfe8c58d9e26f5c819c154 e9b25eb0556f475b4e9e6bcbb1c9fb295d21c511 50a286db529aa1d3fd050101950678854be87b61
+Merge: e9b25eb 50a286d
+Author:     Yves Senn <yves.senn@gmail.com>
+AuthorDate: Mon Dec 29 09:03:16 2014 +0100
+Commit:     Yves Senn <yves.senn@gmail.com>
+CommitDate: Mon Dec 29 09:03:16 2014 +0100
+
+    Merge pull request #18232 from yousuketto/doc-for-bundler-require
+
+    adjust args of Bundler.require in guides [ci skip]
+
+commit 50a286db529aa1d3fd050101950678854be87b61 e9b25eb0556f475b4e9e6bcbb1c9fb295d21c511
+Author:     Yosuke <yosuketto@gmail.com>
+AuthorDate: Mon Dec 29 12:28:53 2014 +0900
+Commit:     Yosuke <yosuketto@gmail.com>
+CommitDate: Mon Dec 29 12:29:14 2014 +0900
+
+    adjust args of Bundler.require in guides [ci skip]
+
+    Arguments of Bundler.require of generator has been changed from rails4.0.4.
+
+    https://github.com/rails/rails/blob/v4.0.4/railties/lib/rails/generators/rails/app/templates/config/application.rb#L16
+
+:100644 100644 a98e17a... 4efc0c6... M  guides/source/upgrading_ruby_on_rails.md
+
+commit e9b25eb0556f475b4e9e6bcbb1c9fb295d21c511 73fe108d700cc2fa85bc7775c5a2ca9ca529849a 8a1d1d4e1451ae76159cd818534916d88c8b6ddc
+Merge: 73fe108 8a1d1d4
+Author:     Guillermo Iguaran <guilleiguaran@gmail.com>
+AuthorDate: Sun Dec 28 21:17:22 2014 -0500
+Commit:     Guillermo Iguaran <guilleiguaran@gmail.com>
+CommitDate: Sun Dec 28 21:17:22 2014 -0500
+
+    Merge pull request #18231 from untidy-hair/improve_a_test
+
+    Expectation comes first
+
+commit 8a1d1d4e1451ae76159cd818534916d88c8b6ddc 73fe108d700cc2fa85bc7775c5a2ca9ca529849a
+Author:     Yukio Mizuta <untidyhair@gmail.com>
+AuthorDate: Sun Dec 28 17:55:40 2014 -0800
+Commit:     Yukio Mizuta <untidyhair@gmail.com>
+CommitDate: Sun Dec 28 17:55:40 2014 -0800
+
+    Expectation comes first
+
+:100644 100644 4fc235a... 61a7cae... M  activejob/test/cases/adapter_test.rb
+
+commit 73fe108d700cc2fa85bc7775c5a2ca9ca529849a edaab4dbe80ac9ae705be05f7d9e20f942e057ab
+Author:     Robin Dupret <robin.dupret@gmail.com>
+AuthorDate: Sun Dec 28 22:37:34 2014 +0100
+Commit:     Robin Dupret <robin.dupret@gmail.com>
+CommitDate: Sun Dec 28 22:55:09 2014 +0100
+
+    Minor documentation edits [ci skip]
+
+:100644 100644 33983d2... a219d35... M  actionpack/lib/action_controller/metal/http_authentication.rb
+:100644 100644 26a536b... 1cf1600... M  activerecord/lib/active_record/connection_adapters/abstract/schema_definitions.rb
+:100644 100644 9c91d6d... 476456e... M  guides/source/active_record_querying.md
+:100644 100644 2fa76cf... 95c7e74... M  guides/source/association_basics.md
+:100644 100644 3a2b4ab... 217a645... M  guides/source/configuring.md
+:100644 100644 d9dd4d8... db3f19f... M  guides/source/contributing_to_ruby_on_rails.md

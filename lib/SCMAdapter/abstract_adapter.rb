@@ -52,6 +52,12 @@ module SCMAdapter
       raise 'This method should be overridden into subclasses.'
     end
 
+    # @param [String] commit_identifier : the commit identifier to perform the diff with its parents.
+    # @param [String] path : diff only a given file.
+    def diff(commit_identifier, path = nil)
+      raise 'This method should be overridden into subclasses.'
+    end
+
     ####################################################
     ##                  MISC                          ##
     ####################################################
