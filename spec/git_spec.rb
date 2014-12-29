@@ -5,7 +5,7 @@
 
 require_relative 'spec_helper'
 
-TEST_REPO_LOCATION = 'spec_resources/git'
+TEST_REPO_LOCATION = 'spec_resources/git_test_repo'
 describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
   before(:each) do
     @git = SCMAdapter::AbstractAdapterFactory.initialize(:git, TEST_REPO_LOCATION)
