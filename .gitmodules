@@ -1,0 +1,3 @@
+[submodule "spec_resources/SCMAdapterTestRepo"]
+	path = spec_resources/SCMAdapterTestRepo
+	url = https://github.com/nmeylan/SCMAdapterTestRepo.git
