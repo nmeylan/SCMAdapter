@@ -74,7 +74,6 @@ module SCMAdapter
     end
 
     def handle_error(output)
-      logger.warn("SCM version :#{self.version}")
       logger.warn(output)
       @failed = true
       raise CommandFailed, "_#{self.last_executed_command}_ - #{output}"

@@ -56,6 +56,16 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
   end
 
   describe 'revisions parser' do
+    it "parse author and date" do
+      revision_txt = ''
+      File.open('spec_resources/git_revisions/revision', 'r') do |file|
+        revision_txt = file.gets(nil)
+      end
+      author, time = @git.revision_parse_author_and_date(revision_txt)
+      expect(author.name).to eql('Yosuke')
+      expect(author.email).to eql('yosuketto@gmail.com')
+      expect(time).to eql(Time.parse('Mon Dec 29 12:29:14 2014 +0900'))
+    end
     it "parse a single revision" do
       revision_txt = ''
       File.open('spec_resources/git_revisions/revision', 'r') do |file|
@@ -91,6 +101,18 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
       files_for_last_rev = last_rev.files
       expect(files_for_last_rev.size).to eql(expected_files_for_last_rev.size)
       expect(files_for_last_rev.collect { |hash| hash[:path] }).to match_array(expected_files_for_last_rev)
+    end
+
+    it 'generate range arguments' do
+      a = 'b67b57d47368b4b834cfe8c58d9e26f5c819c154'
+      b = '50a286db529aa1d3fd050101950678854be87b61'
+      expect(@git.revision_specifying_range({})).to eql([])
+      expect(@git.revision_specifying_range({from: a})).to match_array(["#{a}.."])
+      expect(@git.revision_specifying_range({from: a, to: b})).to match_array(["#{a}..#{b}"])
+      expect(@git.revision_specifying_range({includes: [a, b]})).to match_array([a, b])
+      expect(@git.revision_specifying_range({excludes: [a, b]})).to match_array(["^#{a}", "^#{b}"])
+      expect(@git.revision_specifying_range({includes: [a], excludes: [b]})).to match_array([a, "^#{b}"])
+      expect(@git.revision_specifying_range({includes_without_ancestors: [a]})).to match_array(["#{a}^!"])
     end
   end
   describe 'revisions' do
