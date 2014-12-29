@@ -7,7 +7,7 @@ module SCMAdapter
   module Adapters
     class GitAdapter < AbstractAdapter
       GIT_COMMAND = 'git'.freeze
-      GIT_ERRORS = %w(fatal: error:)
+      GIT_ERRORS = %w(fatal: error: is\ not\ a\ git\ command)
       # COMMANDS
       GIT_BRANCH = 'branch'.freeze
       GIT_TAG = 'tag'.freeze
@@ -50,10 +50,13 @@ module SCMAdapter
 
       def version
         result = nil
-        popen(''.freeze, %w(--versions)) do |io|
+        popen(nil, %w(--version)) do |io|
           result = io.gets(nil)
         end
+        handle_error(result) if GIT_ERRORS.any? { |word| result.include?(word) }
         result
+      rescue ScmCommandAborted => e
+        logger.error "--version aborted : #{e}"
       end
 
       def branches

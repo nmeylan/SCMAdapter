@@ -15,7 +15,8 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
 
   describe 'version' do
     it 'retrieve current git version' do
-      expect(@git.version).not_to be(nil)
+      version = @git.version
+      expect(version).not_to be(nil)
     end
   end
 
