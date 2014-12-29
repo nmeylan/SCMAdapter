@@ -40,7 +40,7 @@ module SCMAdapter
           command << SPACE << Shellwords.shellescape(arg.to_s)
         end
       end
-      command
+      self.last_executed_command = command
     end
 
     def readlines_until(io, separator='')

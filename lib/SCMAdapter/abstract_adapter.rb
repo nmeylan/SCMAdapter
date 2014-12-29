@@ -9,7 +9,7 @@ module SCMAdapter
   class AbstractAdapter
     # See implementation in the "adapters" folder
     include SCMAdapter::Util
-    attr_accessor :path, :adapter_name, :credential, :branches
+    attr_accessor :path, :adapter_name, :credential, :branches, :last_executed_command
 
     @@logger = Logger.new(STDOUT)
     @@logger.level = Logger::WARN
@@ -23,6 +23,7 @@ module SCMAdapter
       @credential = credential
       @failed = false
       @branches = nil
+      @last_executed_command = nil
     end
 
     ####################################################
@@ -76,7 +77,7 @@ module SCMAdapter
       logger.warn("SCM version :#{self.version}")
       logger.warn(output)
       @failed = true
-      raise CommandFailed, output
+      raise CommandFailed, "_#{self.last_executed_command}_ - #{output}"
     end
 
     def failed?

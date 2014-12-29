@@ -109,7 +109,6 @@ module SCMAdapter
         write_popen(GIT_LOG, revisions_args.join("\n"), cmd_args) do |io|
           output = io.gets(nil) # Get all output
           handle_error(output) if GIT_ERRORS.any? { |word| output.include?(word) }
-
           revisions = parse_revisions(output)
         end
         revisions

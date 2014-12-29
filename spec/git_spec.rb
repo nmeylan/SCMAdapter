@@ -48,6 +48,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     TAG_NAMES = %w(v0.1)
     it "contains 1 tag" do
       tags = @git.tags
+      expect(tags.empty?).not_to eq(true)
       expect(tags.size).to eq(1)
       expect(TAG_NAMES.include?(tags[0])).to eq(true)
     end
