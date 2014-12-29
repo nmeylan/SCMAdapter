@@ -5,7 +5,7 @@
 
 require_relative 'spec_helper'
 
-TEST_REPO_LOCATION = 'resources/git'
+TEST_REPO_LOCATION = 'spec_resources/git'
 describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
   before(:each) do
     @git = SCMAdapter::AbstractAdapterFactory.initialize(:git, TEST_REPO_LOCATION)
@@ -49,7 +49,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
   describe 'revisions parser' do
     it "parse a single revision" do
       revision_txt = ''
-      File.open('resources/git_revisions/revision', 'r') do |file|
+      File.open('spec_resources/git_revisions/revision', 'r') do |file|
         revision_txt = file.gets(nil)
       end
       @revision = @git.parse_revision('50a286db529aa1d3fd050101950678854be87b61', revision_txt)
@@ -60,7 +60,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     end
     it "parse multiple revisions" do
       revisions_txt = ''
-      File.open('resources/git_revisions/revisions', 'r') do |file|
+      File.open('spec_resources/git_revisions/revisions', 'r') do |file|
         revisions_txt = file.gets(nil)
       end
       expected_identifiers = %w(b67b57d47368b4b834cfe8c58d9e26f5c819c154
@@ -113,7 +113,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
 
     it "load revisions for a given path" do
       @revisions = @git.revisions('file1.txt')
-      expect(@revisions.size).to be >= 4 # The are four commit for file1.txt at the moment (when I wrote this test).
+      expect(@revisions.size).to be >= 4 # The are four commit for file1.txt at the moment (when I wrote this spec).
     end
 
     it "work with revisions which have more than one parent" do
