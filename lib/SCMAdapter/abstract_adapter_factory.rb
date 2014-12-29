@@ -15,7 +15,7 @@ module SCMAdapter
         when :hg
           SCMAdapter::Adapters::HgAdapter.new(path, credential)
         else
-          raise 'This only support :git, :svn or :hg adapter'
+          raise ArgumentError.new('This only support :git, :svn or :hg adapter')
       end
     end
   end

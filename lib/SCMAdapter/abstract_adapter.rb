@@ -17,7 +17,14 @@ module SCMAdapter
       "#{datetime.strftime('%Y-%m-%d %H:%M:%S')} - #{sprintf('%-5s',severity)} - #{msg}\n"
     end
 
-
+    def initialize(path, adapter_name, credential)
+      @path = Pathname.new(File.expand_path(path))
+      @adapter_name = adapter_name
+      @credential = credential
+      @failed = false
+      @branches = nil
+      @last_executed_command = nil
+    end
 
     ####################################################
     ##                  COMMANDS                      ##
@@ -115,14 +122,5 @@ module SCMAdapter
     ####################################################
     ##                  PRIVATE METHODS               ##
     ####################################################
-    private
-    def initialize(path, adapter_name, credential)
-      @path = Pathname.new(File.expand_path(path))
-      @adapter_name = adapter_name
-      @credential = credential
-      @failed = false
-      @branches = nil
-      @last_executed_command = nil
-    end
   end
 end

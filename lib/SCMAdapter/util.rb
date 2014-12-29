@@ -10,8 +10,6 @@ module SCMAdapter
     SPACE = ' '.freeze
     MODE = 'r+'.freeze
 
-
-
     def self.prepare_command(command, *arguments)
       arguments = arguments.compact.flatten
       command = command.dup
@@ -21,21 +19,6 @@ module SCMAdapter
         end
       end
       command
-    end
-
-    def self.readlines_until(io, separator='')
-      lines = []
-
-      until io.eof?
-        line = io.readline
-        line.chomp!
-
-        break if line == separator
-
-        lines << line
-      end
-
-      lines
     end
 
     def encode_str_to(str, to = 'UTF-8')
