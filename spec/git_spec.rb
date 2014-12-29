@@ -160,9 +160,9 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
   end
 
   describe 'diff' do
-    it 'load diff for a given commit with its parents' do
-      @diff = @git.diff('a440de9ad38f8571026fdf963d910988c77c5d26')
-      expect(@diff).not_to be nil
-    end
+    # it 'load diff for a given commit with its parents' do
+    #   @diff = @git.diff('a440de9ad38f8571026fdf963d910988c77c5d26')
+    #   expect(@diff).not_to be nil
+    # end
   end
 end

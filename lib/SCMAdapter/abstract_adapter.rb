@@ -17,27 +17,20 @@ module SCMAdapter
       "#{datetime.strftime('%Y-%m-%d %H:%M:%S')} - #{sprintf('%-5s',severity)} - #{msg}\n"
     end
 
-    def initialize(path, adapter_name, credential)
-      @path = Pathname.new(File.expand_path(path))
-      @adapter_name = adapter_name
-      @credential = credential
-      @failed = false
-      @branches = nil
-      @last_executed_command = nil
-    end
+
 
     ####################################################
     ##                  COMMANDS                      ##
     ####################################################
     def version
-      raise 'This method should be overridden into subclasses.'
+      raise NotImplementedError.new('This method should be overridden into subclasses.')
     end
     def branches
-      raise 'This method should be overridden into subclasses.'
+      raise NotImplementedError.new('This method should be overridden into subclasses.')
     end
 
     def tags
-      raise 'This method should be overridden into subclasses.'
+      raise NotImplementedError.new('This method should be overridden into subclasses.')
     end
 
     # @param [String] path : Show only commits that are enough to explain how the files that match the specified paths came to be.
@@ -53,20 +46,20 @@ module SCMAdapter
     # Range loading :
     # from:, to: | includes:, excludes: | includes_without_ancestors:
     def revisions(path = nil, options = {})
-      raise 'This method should be overridden into subclasses.'
+      raise NotImplementedError.new('This method should be overridden into subclasses.')
     end
 
     # @param [String] commit_identifier : the commit identifier to perform the diff with its parents.
     # @param [String] path : diff only a given file.
     def diff(commit_identifier, path = nil)
-      raise 'This method should be overridden into subclasses.'
+      raise NotImplementedError.new('This method should be overridden into subclasses.')
     end
 
     ####################################################
     ##                  MISC                          ##
     ####################################################
     def exists?
-      raise 'This method should be overridden into subclasses.'
+      raise NotImplementedError.new('This method should be overridden into subclasses.')
     end
 
     def logger
@@ -93,13 +86,17 @@ module SCMAdapter
     #
     def popen(sub_command, *arguments, &block)
       Dir.chdir(@path) do
-        super(*[self.class.command, sub_command], arguments, &block)
+        super(merge_command(sub_command), arguments, &block)
       end
+    end
+
+    def merge_command(sub_command)
+      [self.class.command, sub_command].join(' '.freeze)
     end
 
     def write_popen(sub_command, write_input, *arguments, &block)
       Dir.chdir(@path) do
-        super(self.class.command,sub_command, write_input, arguments, &block)
+        super(self.class.command, sub_command, write_input, arguments, &block)
       end
     end
 
@@ -118,5 +115,14 @@ module SCMAdapter
     ####################################################
     ##                  PRIVATE METHODS               ##
     ####################################################
+    private
+    def initialize(path, adapter_name, credential)
+      @path = Pathname.new(File.expand_path(path))
+      @adapter_name = adapter_name
+      @credential = credential
+      @failed = false
+      @branches = nil
+      @last_executed_command = nil
+    end
   end
 end
