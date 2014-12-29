@@ -3,9 +3,7 @@
 # Encoding: UTF-8
 # File: git_spec.rb
 
-require '../lib/SCMAdapter'
-require 'coveralls'
-Coveralls.wear!
+require_relative 'spec_helper'
 
 TEST_REPO_LOCATION = 'resources/git'
 describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
