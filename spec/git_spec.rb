@@ -13,6 +13,12 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     expect(@git.exists?).to eq(true)
   end
 
+  describe 'version' do
+    it 'retrieve current git version' do
+      expect(@git.version).not_to be(nil)
+    end
+  end
+
   describe 'branch' do
     BRANCH_NAMES = %w(master branch1 branch2)
     before(:each) do

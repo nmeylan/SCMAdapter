@@ -1,4 +1,6 @@
 # SCMAdapter
+[![Coverage Status](https://img.shields.io/coveralls/nmeylan/SCMAdapter.svg)](https://coveralls.io/r/nmeylan/SCMAdapter?branch=master)
+[![Build Status](https://travis-ci.org/nmeylan/SCMAdapter.svg?branch=master)](https://travis-ci.org/nmeylan/SCMAdapter)
 
 This is a generic SCMAdapter for following SCM :
 * Git

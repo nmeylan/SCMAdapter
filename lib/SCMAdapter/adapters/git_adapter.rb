@@ -48,6 +48,13 @@ module SCMAdapter
         output
       end
 
+      def version
+        result = nil
+        popen(''.freeze, %w(--versions)) do |io|
+          result = io.gets(nil)
+        end
+        result
+      end
 
       def branches
         @branches = []

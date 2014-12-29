@@ -28,6 +28,9 @@ module SCMAdapter
     ####################################################
     ##                  COMMANDS                      ##
     ####################################################
+    def version
+      raise 'This method should be overridden into subclasses.'
+    end
     def branches
       raise 'This method should be overridden into subclasses.'
     end
@@ -70,6 +73,7 @@ module SCMAdapter
     end
 
     def handle_error(output)
+      logger.warn("SCM version :#{self.version}")
       logger.warn(output)
       @failed = true
       raise CommandFailed, output
