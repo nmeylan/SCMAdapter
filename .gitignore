@@ -23,4 +23,3 @@ mkmf.log
 .DS_Store
 .idea/
 spec_resources/git_untracked/
-spec_resources/git/*
