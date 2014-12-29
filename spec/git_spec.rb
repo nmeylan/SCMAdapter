@@ -34,9 +34,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
 
     it "contains 2 branch with names" do
       expect(@branches.size).to be >= 2
-      @branches.each do |branch|
-        expect(branch.branch_name).to match_array(BRANCH_NAMES)
-      end
+      expect(@branches.collect(&:branch_name)).to match_array(BRANCH_NAMES)
     end
 
     it "has master as current branch" do
@@ -89,10 +87,10 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
       expect(@revisions.size).to eql(5)
       revisions_identifiers = @revisions.collect(&:identifier)
       expect(revisions_identifiers).to eql(expected_identifiers)
-      last_rev = @revisions.detect{|rev| rev.identifier.eql?('73fe108d700cc2fa85bc7775c5a2ca9ca529849a')}
+      last_rev = @revisions.detect { |rev| rev.identifier.eql?('73fe108d700cc2fa85bc7775c5a2ca9ca529849a') }
       files_for_last_rev = last_rev.files
       expect(files_for_last_rev.size).to eql(expected_files_for_last_rev.size)
-      expect(files_for_last_rev.collect{|hash| hash[:path]}).to match_array(expected_files_for_last_rev)
+      expect(files_for_last_rev.collect { |hash| hash[:path] }).to match_array(expected_files_for_last_rev)
     end
   end
   describe 'revisions' do
