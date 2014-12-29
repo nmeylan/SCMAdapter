@@ -9,6 +9,9 @@ TEST_REPO_LOCATION = 'spec_resources/git'
 describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
   before(:each) do
     @git = SCMAdapter::AbstractAdapterFactory.initialize(:git, TEST_REPO_LOCATION)
+  end
+
+  it 'exits' do
     expect(@git).not_to eql(nil)
     expect(@git.exists?).to eq(true)
   end
@@ -32,7 +35,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     it "contains 2 branch with names" do
       expect(@branches.size).to be >= 2
       @branches.each do |branch|
-        expect(BRANCH_NAMES.include?(branch.branch_name)).to eq(true)
+        expect(branch.branch_name).to match_array(BRANCH_NAMES)
       end
     end
 
