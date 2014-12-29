@@ -1,0 +1,112 @@
+diff --git a/actionpack/lib/action_controller/metal/http_authentication.rb b/actionpack/lib/action_controller/metal/http_authentication.rb
+index 33983d2..a219d35 100644
+--- a/actionpack/lib/action_controller/metal/http_authentication.rb
++++ b/actionpack/lib/action_controller/metal/http_authentication.rb
+@@ -53,7 +53,7 @@ module ActionController
+     # In your integration tests, you can do something like this:
+     #
+     #   def test_access_granted_from_xml
+-    #     @request.env['HTTP_AUTHORIZATION'] => ActionController::HttpAuthentication::Basic.encode_credentials(users(:dhh).name, users(:dhh).password)
++    #     @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(users(:dhh).name, users(:dhh).password)
+     #     get "/notes/1.xml"
+     #
+     #     assert_equal 200, status
+diff --git a/activerecord/lib/active_record/connection_adapters/abstract/schema_definitions.rb b/activerecord/lib/active_record/connection_adapters/abst
+index 26a536b..1cf1600 100644
+--- a/activerecord/lib/active_record/connection_adapters/abstract/schema_definitions.rb
++++ b/activerecord/lib/active_record/connection_adapters/abstract/schema_definitions.rb
+@@ -380,12 +380,11 @@ module ActiveRecord
+         column(:updated_at, :datetime, options)
+       end
+
+-      # Adds a reference. Optionally adds a +type+ column, if
+-      # <tt>:polymorphic</tt> option is provided.  <tt>references</tt> and
+-      # <tt>belongs_to</tt> are acceptable. The reference column will be an
+-      # +integer+ by default, the <tt>:type</tt> option can be used to specify
+-      # a different type. A foreign key will be created if a +foreign_key+
+-      # option is passed.
++      # Adds a reference. Optionally adds a +type+ column, if the
++      # +:polymorphic+ option is provided. +references+ and +belongs_to+
++      # are acceptable. The reference column will be an +integer+ by default,
++      # the +:type+ option can be used to specify a different type. A foreign
++      # key will be created if the +:foreign_key+ option is passed.
+       #
+       #  t.references(:user)
+       #  t.references(:user, type: "string")
+diff --git a/guides/source/active_record_querying.md b/guides/source/active_record_querying.md
+index 9c91d6d..476456e 100644
+--- a/guides/source/active_record_querying.md
++++ b/guides/source/active_record_querying.md
+@@ -1336,14 +1336,14 @@ Understanding The Method Chaining
+ The Active Record pattern implements [Method Chaining](http://en.wikipedia.org/wiki/Method_chaining),
+ which allow us to use multiple Active Record methods together in a simple and straightforward way.
+
+-You can chain a method in a sentence when the previous method called returns `ActiveRecord::Relation`,
+-like `all`, `where`, and `joins`. Methods that returns a instance of a single object
+-(see [Retrieving a Single Object Section](#retrieving-a-single-object)) have to be be the last
+-in the sentence.
++You can chain methods in a statement when the previous method called returns an
++`ActiveRecord::Relation`, like `all`, `where`, and `joins`. Methods that return
++a single object (see [Retrieving a Single Object Section](#retrieving-a-single-object))
++have to be at the end of the statement.
+
+-There are some examples below. This guide won't cover all the possibilities, just a few as example.
+-When a Active Record method is called, the query is not immediately generated and sent to the database,
+-this just happen when the data is actually needed. So each example below generate a single query.
++There are some examples below. This guide won't cover all the possibilities, just a few as examples.
++When an Active Record method is called, the query is not immediately generated and sent to the database,
++this just happens when the data is actually needed. So each example below generates a single query.
+
+ ### Retrieving filtered data from multiple tables
+
+@@ -1384,7 +1384,7 @@ WHERE people.name = 'John'
+ LIMIT 1
+ ```
+
+-NOTE: Remember that, if `find_by` return more than one registry, it will take just the first and ignore the others. Note the `LIMIT 1` statement above.
++NOTE: Remember that, if `find_by` returns more than one registry, it will take just the first and ignore the others. Note the `LIMIT 1` statement above
+
+ Find or Build a New Object
+ --------------------------
+diff --git a/guides/source/association_basics.md b/guides/source/association_basics.md
+index 2fa76cf..95c7e74 100644
+--- a/guides/source/association_basics.md
++++ b/guides/source/association_basics.md
+@@ -1528,6 +1528,7 @@ end
+ ```
+
+ ##### `:counter_cache`
++
+ This option can be used to configure a custom named `:counter_cache`. You only need this option when you customized the name of your `:counter_cache` o
+
+ ##### `:dependent`
+diff --git a/guides/source/configuring.md b/guides/source/configuring.md
+index 3a2b4ab..217a645 100644
+--- a/guides/source/configuring.md
++++ b/guides/source/configuring.md
+@@ -122,7 +122,7 @@ numbers. New applications filter out passwords by adding the following `config.f
+
+ * `secrets.secret_key_base` is used for specifying a key which allows sessions for the application to be verified against a known secure key to prevent
+
+-* `config.serve_static_files` configures Rails to serve static files. This option defaults to true, but in the production environment it is set to fals
++* `config.serve_static_files` configures Rails to serve static files. This option defaults to true, but in the production environment it is set to fals
+
+ * `config.session_store` is usually set up in `config/initializers/session_store.rb` and specifies what class to use to store the session. Possible val
+
+diff --git a/guides/source/contributing_to_ruby_on_rails.md b/guides/source/contributing_to_ruby_on_rails.md
+index d9dd4d8..db3f19f 100644
+--- a/guides/source/contributing_to_ruby_on_rails.md
++++ b/guides/source/contributing_to_ruby_on_rails.md
+@@ -291,9 +291,9 @@ file.
+
+ #### Testing Active Record
+
+-First, create the databases you'll need. For MySQL and PostgreSQL,
+-running the SQL statements `create database activerecord_unittest` and
+-`create database activerecord_unittest2` is sufficient. This is not
++First, create the databases you'll need. For MySQL and PostgreSQL,
++running the SQL statements `create database activerecord_unittest` and
++`create database activerecord_unittest2` is sufficient. This is not
+ necessary for SQLite3.
+
+ This is how you run the Active Record test suite only for SQLite3:

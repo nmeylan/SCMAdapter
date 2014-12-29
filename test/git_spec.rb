@@ -4,6 +4,8 @@
 # File: git_spec.rb
 
 require '../lib/SCMAdapter'
+require 'coveralls'
+Coveralls.wear!
 
 TEST_REPO_LOCATION = 'resources/git'
 describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
