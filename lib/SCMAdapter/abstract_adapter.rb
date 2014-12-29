@@ -86,6 +86,7 @@ module SCMAdapter
     #
     def popen(sub_command, *arguments, &block)
       Dir.chdir(@path) do
+        logger.warn(Dir.pwd)
         super(merge_command(sub_command), arguments, &block)
       end
     end
@@ -96,6 +97,7 @@ module SCMAdapter
 
     def write_popen(sub_command, write_input, *arguments, &block)
       Dir.chdir(@path) do
+        logger.warn(Dir.pwd)
         super(self.class.command, sub_command, write_input, arguments, &block)
       end
     end
