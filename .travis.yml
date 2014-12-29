@@ -4,5 +4,9 @@ rvm:
   - 2.1.2
 before_install:
   - git submodule update --init --recursive
+  - git submodule foreach 'git checkout branch1'
+  - git submodule foreach 'git checkout branch2'
+  - git submodule foreach 'git checkout v0.1'
+  - git submodule foreach 'git checkout master'
 notifications:
   email: false
