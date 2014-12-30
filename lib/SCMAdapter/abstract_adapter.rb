@@ -21,7 +21,6 @@ module SCMAdapter
       @path = Pathname.new(File.expand_path(path))
       @adapter_name = adapter_name
       @credential = credential
-      @failed = false
       @branches = nil
       @last_executed_command = nil
     end
@@ -65,9 +64,6 @@ module SCMAdapter
     ####################################################
     ##                  MISC                          ##
     ####################################################
-    def exists?
-      raise NotImplementedError.new('This method should be overridden into subclasses.')
-    end
 
     def logger
       @@logger
@@ -75,12 +71,7 @@ module SCMAdapter
 
     def handle_error(output)
       logger.warn(output)
-      @failed = true
       raise CommandFailed, "_#{self.last_executed_command}_ - #{output}"
-    end
-
-    def failed?
-      @failed
     end
 
     # Runs a command as a separate process.

@@ -32,22 +32,6 @@ module SCMAdapter
         end
       end
 
-      def exists?
-        status
-        !failed?
-      end
-
-      def status
-        output = ''
-        popen(GIT_STATUS) do |io|
-          io.each_line do |line|
-            handle_error(line) if GIT_ERRORS.any? { |word| line.include?(word) }
-            output += "#{line} \n"
-          end
-        end
-        output
-      end
-
       def version
         result = nil
         popen(nil, %w(--version)) do |io|

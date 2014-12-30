@@ -11,11 +11,6 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     @git = SCMAdapter::AbstractAdapterFactory.initialize(:git, TEST_REPO_LOCATION)
   end
 
-  it 'exits' do
-    expect(@git).not_to eql(nil)
-    expect(@git.exists?).to eq(true)
-  end
-
   describe 'version' do
     it 'retrieve current git version' do
       version = @git.version

@@ -10,7 +10,7 @@ describe SCMAdapter::AbstractAdapter do
   end
 
   it 'raise NotImplementedError on revisions' do
-    methods = %i(tags branches revisions version exists?)
+    methods = %i(tags branches revisions version)
     methods.each do |meth|
       expect { @adapter.send(meth) }.to raise_error(NotImplementedError)
     end
