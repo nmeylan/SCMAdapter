@@ -103,7 +103,7 @@ module SCMAdapter
         cmd_args = %w(--no-color --encoding=UTF-8 --raw  --pretty=fuller --parents --stdin)
         cmd_args << '--reverse' if options[:reverse]
         cmd_args << '-n' << "#{options[:limit].to_i}" if options[:limit]
-        cmd_args << '--' << encode_str_to(path) if path && !path.empty?
+        cmd_args << '--' << SCMAdapter::Util::encode_str_to(path) if path && !path.empty?
         revisions_args = revision_specifying_range(options)
         revisions = []
         write_popen(GIT_LOG, revisions_args.join("\n"), cmd_args) do |io|

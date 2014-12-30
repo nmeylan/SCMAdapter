@@ -21,12 +21,11 @@ module SCMAdapter
       command
     end
 
-    def encode_str_to(str, to = 'UTF-8')
+    def self.encode_str_to(str, to = Encoding::UTF_8)
       begin
-        str.encode(to)
+        str.encode(to) unless str.encoding.name.eql?(to)
       rescue Exception => err
-        logger.error("failed to convert to #{to}. #{err}")
-        nil
+        raise EncodingFailed, err
       end
     end
 

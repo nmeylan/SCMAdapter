@@ -26,9 +26,13 @@ module SCMAdapter
   ENV_UNIX = :unix
 
 
+  class EncodingFailed < StandardError;
+  end
+
   class CommandFailed < StandardError;
   end
 
   class ScmCommandAborted < CommandFailed;
   end
+
 end
