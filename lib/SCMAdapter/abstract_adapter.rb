@@ -82,7 +82,7 @@ module SCMAdapter
     # @return [IO] The stdout of the command being ran.
     #
     def popen(sub_command, *arguments, &block)
-      Dir.chdir(@path) do
+      change_working_directory do
         super(merge_command(sub_command), arguments, &block)
       end
     end
@@ -92,8 +92,14 @@ module SCMAdapter
     end
 
     def write_popen(sub_command, write_input, *arguments, &block)
-      Dir.chdir(@path) do
+      change_working_directory do
         super(self.class.command, sub_command, write_input, arguments, &block)
+      end
+    end
+
+    def change_working_directory(&block)
+      Dir.chdir(@path) do
+        yield
       end
     end
 
@@ -106,7 +112,7 @@ module SCMAdapter
     end
 
     def self.command
-      raise 'This method should be overridden into subclasses.'
+      raise  NotImplementedError.new('This method should be overridden into subclasses.')
     end
 
     ####################################################
