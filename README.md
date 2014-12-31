@@ -8,11 +8,10 @@ This is a generic SCMAdapter for following SCM :
 * Svn
 * Hg (mercurial)
 
-The objective is only to implements these functions :
-* Retrieve revisions
+The objective is only to implement these functions :
+* Retrieve revisions / single revision
 * Browse branches / tags
-* Retrieve commit
-* Diff
+* Diff files / revisions
 
 ## Installation
 
