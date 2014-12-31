@@ -5,12 +5,17 @@
 module SCMAdapter
   module RepositoryData
     class DiffHunkHeader
-      attr_accessor :start, :count
-      # @param [Numeric] start : the hunk start.
-      # @param [Numeric] count : the hunk count.
-      def initialize(start, count)
-        @start = start
-        @count = count
+      attr_accessor :from_file_start, :from_file_count, :to_file_start, :to_file_count, :text
+      def initialize(from_file_start, from_file_count, to_file_start, to_file_count, text)
+        @from_file_start = convert_to_integer(from_file_start)
+        @from_file_count = convert_to_integer(from_file_count)
+        @to_file_start = convert_to_integer(to_file_start)
+        @to_file_count = convert_to_integer(to_file_count)
+        @text = text
+      end
+
+      def convert_to_integer(something)
+        something.empty? ? nil : something.to_i
       end
     end
   end

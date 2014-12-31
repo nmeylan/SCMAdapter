@@ -177,19 +177,39 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     end
   end
 
-  describe 'single diff parser more than one line' do
-    before(:each) do
-      @diff_txt = ''
-      File.open('spec_resources/git_diffs/single_file_diff', 'r') do |file|
-        @diff_txt = file.gets(nil)
-      end
+  describe 'single diff parser' do
+
+    it 'parse a diff hunk header more than one line' do
+      diff_hunk_header = @git.parse_diff_hunk_header('@@ -1336,14 +1336,15 @@ Understanding The Method Chaining')
+      expect(diff_hunk_header.class).to eql(SCMAdapter::RepositoryData::DiffHunkHeader)
+      expect(diff_hunk_header.from_file_start).to eql(1336)
+      expect(diff_hunk_header.from_file_count).to eql(14)
+
+      expect(diff_hunk_header.to_file_start).to eql(1336)
+      expect(diff_hunk_header.to_file_count).to eql(15)
+      expect(diff_hunk_header.text).to eql(" Understanding The Method Chaining")
     end
 
-    it 'parse a diff hunk header' do
-      from_file_header = @git.parse_diff_hunk_header(@diff_txt)
-      expect(from_file_header.class).to eql(SCMAdapter::RepositoryData::DiffHunkHeader)
-      # expect(from_file_header.start).to eql(1336)
-      # expect(from_file_header.count).to eql(14)
+    it 'parse a diff hunk header one line' do
+      diff_hunk_header = @git.parse_diff_hunk_header('@@ -1 +1,2 @@')
+      expect(diff_hunk_header.class).to eql(SCMAdapter::RepositoryData::DiffHunkHeader)
+      expect(diff_hunk_header.from_file_start).to eql(1)
+      expect(diff_hunk_header.from_file_count).to eql(nil)
+
+      expect(diff_hunk_header.to_file_start).to eql(1)
+      expect(diff_hunk_header.to_file_count).to eql(2)
+      expect(diff_hunk_header.text).to eql('')
+    end
+
+    it 'parse a diff hunk header one line' do
+      diff_hunk_header = @git.parse_diff_hunk_header('@@ -0,0 +1 @@')
+      expect(diff_hunk_header.class).to eql(SCMAdapter::RepositoryData::DiffHunkHeader)
+      expect(diff_hunk_header.from_file_start).to eql(0)
+      expect(diff_hunk_header.from_file_count).to eql(0)
+
+      expect(diff_hunk_header.to_file_start).to eql(1)
+      expect(diff_hunk_header.to_file_count).to eql(nil)
+      expect(diff_hunk_header.text).to eql('')
     end
   end
 end
