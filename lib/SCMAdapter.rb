@@ -6,6 +6,8 @@
 require "SCMAdapter/version"
 
 module SCMAdapter
+  BLANK = ''
+
   autoload :AbstractAdapter, 'SCMAdapter/abstract_adapter'
   autoload :AbstractAdapterFactory, 'SCMAdapter/abstract_adapter_factory'
   autoload :Util, 'SCMAdapter/util'
@@ -14,6 +16,8 @@ module SCMAdapter
     autoload :GitAdapter, 'SCMAdapter/adapters/git_adapter'
     autoload :HgAdapter, 'SCMAdapter/adapters/hg_adapter'
     autoload :SvnAdapter, 'SCMAdapter/adapters/svn_adapter'
+
+    autoload :GitRevisionAdapter, 'SCMAdapter/adapters/git_adapter/git_revision_adapter'
   end
 
   module RepositoryData
