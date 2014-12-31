@@ -18,12 +18,16 @@ module SCMAdapter
     autoload :SvnAdapter, 'SCMAdapter/adapters/svn_adapter'
 
     autoload :GitRevisionAdapter, 'SCMAdapter/adapters/git_adapter/git_revision_adapter'
+    autoload :GitDiffAdapter, 'SCMAdapter/adapters/git_adapter/git_diff_adapter'
   end
 
   module RepositoryData
     autoload :Branch, 'SCMAdapter/repository_data/branch'
     autoload :Revision, 'SCMAdapter/repository_data/revision'
     autoload :Author, 'SCMAdapter/repository_data/author'
+    autoload :Diff, 'SCMAdapter/repository_data/diff'
+    autoload :DiffHunk, 'SCMAdapter/repository_data/diff_hunk'
+    autoload :DiffHunkHeader, 'SCMAdapter/repository_data/diff_hunk_header'
   end
 
   ENV_MSWIN = :mswin

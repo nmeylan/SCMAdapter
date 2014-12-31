@@ -177,10 +177,19 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
     end
   end
 
-  describe 'diff' do
-    # it 'load diff for a given commit with its parents' do
-    #   @diff = @git.diff('a440de9ad38f8571026fdf963d910988c77c5d26')
-    #   expect(@diff).not_to be nil
-    # end
+  describe 'single diff parser more than one line' do
+    before(:each) do
+      @diff_txt = ''
+      File.open('spec_resources/git_diffs/single_file_diff', 'r') do |file|
+        @diff_txt = file.gets(nil)
+      end
+    end
+
+    it 'parse a diff hunk header' do
+      from_file_header = @git.parse_diff_hunk_header(@diff_txt)
+      expect(from_file_header.class).to eql(SCMAdapter::RepositoryData::DiffHunkHeader)
+      # expect(from_file_header.start).to eql(1336)
+      # expect(from_file_header.count).to eql(14)
+    end
   end
 end

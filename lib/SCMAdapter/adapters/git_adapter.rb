@@ -7,6 +7,7 @@ module SCMAdapter
   module Adapters
     class GitAdapter < AbstractAdapter
       include SCMAdapter::Adapters::GitRevisionAdapter
+      include SCMAdapter::Adapters::GitDiffAdapter
       GIT_COMMAND = 'git'.freeze
       GIT_ERRORS = %w(fatal: error: is\ not\ a\ git\ command)
       # COMMANDS

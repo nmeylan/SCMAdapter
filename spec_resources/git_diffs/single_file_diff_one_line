@@ -1,0 +1,7 @@
+diff --git a/file3.txt b/file3.txt
+index f07ef1b..8f1e431 100644
+--- a/file3.txt
++++ b/file3.txt
+@@ -1 +1,2 @@
+ New branch2 file.
++Update 078b0d85d08cbec2e40e246cc8a7285b75cf47aa.
