@@ -12,7 +12,10 @@ module SCMAdapter
 
       def parse_diff_hunk(hunk)
 
-        SCMAdapter::RepositoryData::DiffHunk.new(parse_diff_hunk_header(hunk), '', '')
+        SCMAdapter::RepositoryData::DiffHunk.new(parse_diff_hunk_header(hunk),
+                                                 parse_hunk_content(:from, hunk),
+                                                 parse_hunk_content(:to, hunk)
+        )
       end
 
       # @param [Symbol] source : accepted values are :from or :to.
