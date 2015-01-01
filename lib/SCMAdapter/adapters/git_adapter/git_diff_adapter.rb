@@ -5,10 +5,22 @@
 module SCMAdapter
   module Adapters
     module GitDiffAdapter
-      def parse_diff_hunk_header(hunk_header)
-        matches = hunk_header.match(/^@@\s[\-](\d*)[,]?(\d*)\s[+](\d*)[,]?(\d*)\s@@(.*)/)
-        diff_hunk_header = SCMAdapter::RepositoryData::DiffHunkHeader.new($1, $2, $3, $4, $5)
-        diff_hunk_header
+      def parse_diff_hunk_header(hunk)
+        hunk.match(/^@@\s[\-](\d*)[,]?(\d*)\s[+](\d*)[,]?(\d*)\s@@(.*)/)
+        SCMAdapter::RepositoryData::DiffHunkHeader.new($1, $2, $3, $4, $5)
+      end
+
+      def parse_diff_hunk(hunk)
+
+        SCMAdapter::RepositoryData::DiffHunk.new(parse_diff_hunk_header(hunk), '', '')
+      end
+
+      # @param [Symbol] source : accepted values are :from or :to.
+      # @param [String] hunk_content : the content of diff hunk.
+      def parse_hunk_content(source, hunk_content)
+        raise ArgumentError.new('First params valid values are :from or :to') unless [:from, :to].include?(source)
+        operator = {from: '-', to: '+'}
+        hunk_content.scan(Regexp.new("^[\\s\\#{operator[source]}].*$")).join("\n")
       end
     end
   end

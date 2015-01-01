@@ -199,9 +199,7 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
       expect(diff_hunk_header.to_file_start).to eql(1)
       expect(diff_hunk_header.to_file_count).to eql(2)
       expect(diff_hunk_header.text).to eql('')
-    end
 
-    it 'parse a diff hunk header one line' do
       diff_hunk_header = @git.parse_diff_hunk_header('@@ -0,0 +1 @@')
       expect(diff_hunk_header.class).to eql(SCMAdapter::RepositoryData::DiffHunkHeader)
       expect(diff_hunk_header.from_file_start).to eql(0)
@@ -210,6 +208,46 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
       expect(diff_hunk_header.to_file_start).to eql(1)
       expect(diff_hunk_header.to_file_count).to eql(nil)
       expect(diff_hunk_header.text).to eql('')
+    end
+    describe 'parse hunk' do
+      before(:each) do
+        @hunk = ''
+        File.open('spec_resources/git_diffs/diff_hunk', 'r') do |file|
+          @hunk = file.gets(nil)
+        end
+      end
+      it 'parse a diff hunk' do
+
+        diff_hunk = @git.parse_diff_hunk(@hunk)
+        expect(diff_hunk.class).to eql(SCMAdapter::RepositoryData::DiffHunk)
+        diff_hunk_header = diff_hunk.header
+        expect(diff_hunk_header.class).to eql(SCMAdapter::RepositoryData::DiffHunkHeader)
+        expect(diff_hunk_header.from_file_start).to eql(1336)
+        expect(diff_hunk_header.from_file_count).to eql(14)
+
+        expect(diff_hunk_header.to_file_start).to eql(1336)
+        expect(diff_hunk_header.to_file_count).to eql(14)
+        expect(diff_hunk_header.text).to eql(" Understanding The Method Chaining")
+
+        from_file_content = diff_hunk.from_file_content
+      end
+
+      it 'raise an ArgumentError when passing wrong params to parse_hunk_content' do
+        expect { @git.parse_hunk_content(:wrong_arg, '') }.to raise_error(ArgumentError)
+        expect { @git.parse_hunk_content(:from, '') }.to_not raise_error
+        expect { @git.parse_hunk_content(:to, '') }.to_not raise_error
+      end
+
+      it 'parse from file_content' do
+        hunk_content = @hunk.gsub(/^@@.*$\n/, '')
+        from_file_expected_content = ''
+        File.open('spec_resources/git_diffs/diff_hunk_from_file_content', 'r') do |file|
+          from_file_expected_content = file.gets(nil)
+        end
+        from_file_content = @git.parse_hunk_content(:from, hunk_content)
+        expect(from_file_content.split(/\n/).size).to eql(from_file_expected_content.split(/\n/).size)
+        expect(from_file_content).to eql(from_file_expected_content)
+      end
     end
   end
 end

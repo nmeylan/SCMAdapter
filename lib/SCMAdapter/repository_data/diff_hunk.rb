@@ -7,10 +7,12 @@
 module SCMAdapter
   module RepositoryData
     class DiffHunk
-
+      attr_accessor :header, :from_file_content, :to_file_content
       # @param [DiffHunkHeader] header : the header of the hunk.
-      def initialize(from_file_header, to_file_header)
-        @from_file_header = from_file_header
+      def initialize(header, from_file_content, to_file_content)
+        @header = header
+        @from_file_content = from_file_content
+        @to_file_content = to_file_content
       end
 
     end
