@@ -20,7 +20,7 @@ module SCMAdapter
       def parse_hunk_content(source, hunk_content)
         raise ArgumentError.new('First params valid values are :from or :to') unless [:from, :to].include?(source)
         operator = {from: '-', to: '+'}
-        hunk_content.scan(Regexp.new("^[\\s\\#{operator[source]}].*$")).join("\n")
+        hunk_content.scan(Regexp.new("^([ \\#{operator[source]}].*|)$")).join("\n")
       end
     end
   end

@@ -248,6 +248,18 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
         expect(from_file_content.split(/\n/).size).to eql(from_file_expected_content.split(/\n/).size)
         expect(from_file_content).to eql(from_file_expected_content)
       end
+
+      it 'parse to file_content' do
+        hunk_content = @hunk.gsub(/^@@.*$\n/, '')
+        to_file_expected_content = ''
+        File.open('spec_resources/git_diffs/diff_hunk_to_file_content', 'r') do |file|
+          to_file_expected_content = file.gets(nil)
+        end
+        to_file_content = @git.parse_hunk_content(:to, hunk_content)
+        p to_file_content
+        expect(to_file_content.split(/\n/).size).to eql(to_file_expected_content.split(/\n/).size)
+        expect(to_file_content).to eql(to_file_expected_content)
+      end
     end
   end
 end
