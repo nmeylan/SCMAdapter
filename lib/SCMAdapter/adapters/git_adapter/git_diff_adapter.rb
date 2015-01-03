@@ -20,10 +20,13 @@ module SCMAdapter
 
       # @param [Symbol] source : accepted values are :from or :to.
       # @param [String] hunk_content : the content of diff hunk.
+      # @return [Array] an array of size 2.
+      # first index is the match result string, it is the diff hunk content
+      # Second index is the number of addition/deletion of the hunk (depending of which argument "source" is given)
       def parse_hunk_content(source, hunk_content)
         raise ArgumentError.new('First params valid values are :from or :to') unless [:from, :to].include?(source)
         operator = {from: '-', to: '+'}
-        match_result = hunk_content.scan(Regexp.new("^(?<line>(?<first_char>[ \\#{operator[source]}]).*$|^)$"))
+        match_result = hunk_content.scan(Regexp.new("^(([ \\#{operator[source]}]).*$|^)$"))
         count = match_result.inject(0){|sum, match| operator[source].eql?(match[1]) ? sum + 1: sum}
         match_string = match_result.collect{|match| match.first}.join("\n")
         return match_string, count

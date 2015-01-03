@@ -245,6 +245,13 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
         expect(number_additions).to eql(7)
       end
 
+      it 'do not raise error when diff input is empty' do
+        # Even if it should not happen
+        to_file_content, number_additions = @git.parse_hunk_content(:to, '')
+        expect(to_file_content).to eql('')
+        expect(number_additions).to eql(0)
+      end
+
       it 'parse a diff hunk' do
         from_count = 14
         to_count = 14
@@ -280,7 +287,6 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
         expect(diff_hunk.number_additions).to eql(7)
         expect(diff_hunk.number_deletions).to eql(7)
       end
-
     end
   end
 end
