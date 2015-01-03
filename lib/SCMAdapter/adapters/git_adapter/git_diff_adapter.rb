@@ -13,8 +13,8 @@ module SCMAdapter
       def parse_diff_hunk(hunk)
 
         SCMAdapter::RepositoryData::DiffHunk.new(parse_diff_hunk_header(hunk),
-                                                 parse_hunk_content(:from, hunk),
-                                                 parse_hunk_content(:to, hunk)
+                                                 *parse_hunk_content(:from, hunk),
+                                                 *parse_hunk_content(:to, hunk)
         )
       end
 
@@ -23,7 +23,10 @@ module SCMAdapter
       def parse_hunk_content(source, hunk_content)
         raise ArgumentError.new('First params valid values are :from or :to') unless [:from, :to].include?(source)
         operator = {from: '-', to: '+'}
-        hunk_content.scan(Regexp.new("^[ \\#{operator[source]}].*$|^$")).join("\n")
+        match_result = hunk_content.scan(Regexp.new("^(?<line>(?<first_char>[ \\#{operator[source]}]).*$|^)$"))
+        count = match_result.inject(0){|sum, match| operator[source].eql?(match[1]) ? sum + 1: sum}
+        match_string = match_result.collect{|match| match.first}.join("\n")
+        return match_string, count
       end
     end
   end

@@ -228,9 +228,10 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
         File.open('spec_resources/git_diffs/diff_hunk_from_file_content', 'r') do |file|
           from_file_expected_content = file.gets(nil)
         end
-        from_file_content = @git.parse_hunk_content(:from, @hunk)
+        from_file_content, number_deletions = @git.parse_hunk_content(:from, @hunk)
         expect(from_file_content.split(/\n/).size).to eql(from_file_expected_content.split(/\n/).size)
         expect(from_file_content).to eql(from_file_expected_content)
+        expect(number_deletions).to eql(7)
       end
 
       it 'parse to file_content' do
@@ -238,9 +239,10 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
         File.open('spec_resources/git_diffs/diff_hunk_to_file_content', 'r') do |file|
           to_file_expected_content = file.gets(nil)
         end
-        to_file_content = @git.parse_hunk_content(:to, @hunk)
+        to_file_content, number_additions = @git.parse_hunk_content(:to, @hunk)
         expect(to_file_content.split(/\n/).size).to eql(to_file_expected_content.split(/\n/).size)
         expect(to_file_content).to eql(to_file_expected_content)
+        expect(number_additions).to eql(7)
       end
 
       it 'parse a diff hunk' do
@@ -274,6 +276,9 @@ describe SCMAdapter::Adapters::GitAdapter, 'instantiation' do
         to_file_content = diff_hunk.to_file_content
         expect(to_file_content.split(/\n/).size).to eql(to_count)
         expect(to_file_content).to eql(to_file_expected_content)
+
+        expect(diff_hunk.number_additions).to eql(7)
+        expect(diff_hunk.number_deletions).to eql(7)
       end
 
     end
